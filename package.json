@@ -1,0 +1,23 @@
+{
+  "name": "mibolsillo-technical-assessment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/faizahsayyid/mibolsillo-technical-assessment.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/faizahsayyid/mibolsillo-technical-assessment/issues"
+  },
+  "homepage": "https://github.com/faizahsayyid/mibolsillo-technical-assessment#readme",
+  "devDependencies": {
+    "jest": "^26.6.3"
+  }
+}

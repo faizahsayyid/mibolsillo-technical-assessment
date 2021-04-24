@@ -42,24 +42,91 @@ class RailwayGraph{
         }
     }
 
-    // returns the shortest path between city1 and city2
-    // Uses Dijkstra’s Shortest Path Algorithm
-    getShortestRoute(city1, city2){
-        var visited = [city1];
-        var currVertex = this.cities.get(city1);
-        var shortestDistances = new Map();
+    getDistanceOfPath(path){
+        distSoFar = 0;
+        for (i = 0; i < path.length - 1; i++) {
+            distSoFar += this.getDistance(path[i], path[i + 1]);
+        }
 
-        for (city in this.cities.values()){
-            if(city == city1){
-                shortestDistances.set(city, 0)
+        return distSoFar;
+    }
+
+    // returns the shortest path between city1 and city2
+    // returns null if no route is found
+    getShortestRoute(city1, city2){
+        dijkstraInfo = dijkstra(city1);
+        var shortestDistances = dijkstraInfo[0];
+        var prevVertex = dijkstraInfo[1];
+        var curr = city2;
+        var pathSoFar = [];
+
+        if (shortestDistances.get(city2) == Infinity){
+            return null;
+        }
+        else{
+            while (curr != city1)
+            {
+                pathSoFar.push(curr);
+                curr = prevVertex.get(curr);
             }
-            else{
-                shortestDistances.set(city, Infinity)
-            }
+            return pathSoFar.reverse();;
         }
     }
 
-    getAllRoutes(){
+    // Dijkstra’s Shortest Path Algorithm
+    dijkstra(startV){
+        var visited = [];
+        var currVertex = null;
+        var shortestDistances = new Map();
+        var prevVertex = new Map();
 
+        // initialize shortestDistances
+        for (city in this.cities.values()){
+            if(city == startV){
+                shortestDistances.set(city, 0);
+            }
+            else{
+                shortestDistances.set(city, Infinity);
+            }
+        }
+
+        while(visited.length < this.cities.size){
+
+            currVertex = minDistVertex(shortestDistances);
+
+            for (neighbour in currVertex.neighbours.keys()){
+                if(!visited.includes(neighbour))
+                dist = shortestDistances.get(currVertex.item) + this.getDistance(currVertex.item, neighbour.item);
+
+                if(dist < shortestDistances.get(neighbour)){
+                    shortestDistances.set(neighbour, dist);
+                    prevVertex.set(neighbour, cur);
+                }
+            }
+
+            visited.push(currVertex);
+        }
+
+        return [shortestDistances, prevVertex];
     }
+
+    getAllRoutes(city1, city2, maxStops){
+        
+    }
+}
+
+// helper function for dijkstra
+// return the cityVertex with a smallest distance in shortestDistances
+function minDistVertex(shortestDistances){
+    var minDistSoFar = -1;
+    var minCitySoFar = null;
+
+    for (city in shortestDistances.keys()){
+        if (shortestDistances.get(city) < minDistSoFar){
+            minDistSoFar = shortestDistances.get(city);
+            minCitySoFar = city;
+        }
+    }
+
+    return this.cities.get(minCitySoFar);
 }
