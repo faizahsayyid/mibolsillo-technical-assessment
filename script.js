@@ -30,6 +30,10 @@ class RailwayGraph{
         }
     }
 
+    isInGraph(city){
+        return this.cities.has(city)
+    }
+
     // return edge weight
     getDistance(city1, city2){
         if (this.cities.has(city1) && this.cities.has(city2)){
@@ -111,7 +115,7 @@ class RailwayGraph{
     }
 
     getAllRoutes(city1, city2, maxStops){
-        
+
     }
 }
 
@@ -129,4 +133,47 @@ function minDistVertex(shortestDistances){
     }
 
     return this.cities.get(minCitySoFar);
+}
+
+// Creates graph from string input
+// if this is not test data:
+// input will have edges to add seperated by a semicolon and each 
+// part of the edge seperated by a comma.
+// ex. A,B,5; B,C,4; C,D,8; D,C,8; D,E,6; A,D,5; C,E,2; E,B,3; A,E,7
+// if this is test data:
+// ex. AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7
+
+function createRailwayGraph(graphStr, isTestData){
+    var graphSoFar = new RailwayGraph()
+    
+    if(isTestData)
+    {
+        let edgeStrs = graphStr.split(", ")
+        for(e in edgeStrs){
+
+            if (!graphSoFar.isInGraph(e[0])){
+                graphSoFar.addCity(e[0])
+            }
+            if (!graphSoFar.isInGraph(e[1])){
+                graphSoFar.addCity(e[1])
+            }
+            graphSoFar.addEdge(e[0], e[1], parseInt(e[2]))
+        }
+    }
+    else{
+        let edgeStrs = graphStr.split("; ")
+
+        for(e in edgeStrs){
+            edgeInfo = e.split(",") 
+
+            if (!graphSoFar.isInGraph(edgeInfo[0])){
+                graphSoFar.addCity(edgeInfo[0])
+            }
+            if (!graphSoFar.isInGraph(edgeInfo[1])){
+                graphSoFar.addCity(edgeInfo[1])
+            }
+            graphSoFar.addEdge(edgeInfo[0], edgeInfo[1], parseInt(edgeInfo[2]))
+        }
+    }
+    return graphSoFar
 }
