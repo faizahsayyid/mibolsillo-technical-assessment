@@ -33,10 +33,10 @@
             Ex. A-B-C
         </p>
         <form>
-            <label for="get-distance">Input Route:</label><br>
-            <input type="text" id="get-distance" name="get-distance" value="A-B-C"><br>
-            <input type="submit" value="Submit">
+            <label for="path">Input Route:</label><br>
+            <input type="text" id="path" name="path" value="A-B-C"><br>
         </form>
+        <button id="calc-dist-btn" onclick="calcDist()">Calculate Distance</button>
         <p id="output-distance"></p>
     </div>
     <div class="shortest-route">
@@ -47,8 +47,8 @@
             <input type="text" id="city1" name="city1" value="A"><br>
             <label for="city2">Destination:</label><br>
             <input type="text" id="city2" name="city2" value="C"><br>
-            <input type="submit" value="Submit">
         </form>
+        <button id="shortest-btn" onclick="shortestRoute()">Find Shortest Route</button>
         <p id="output-shortest"></p>
     </div>
     <div class="stops">
@@ -56,11 +56,13 @@
         <h3>Find all the routes between two cities within the given maximim number of stops.</h3>
         <form>
             <label for="city1">Start City:</label><br>
-            <input type="text" id="city1" name="city1" value="A"><br>
+            <input type="text" id="src1" name="src1" value="A"><br>
             <label for="city2">Destination:</label><br>
-            <input type="text" id="city2" name="city2" value="C"><br>
-            <input type="submit" value="Submit">
+            <input type="text" id="dst1" name="dst1" value="C"><br>
+            <label for="stops">Maximum Stops:</label><br>
+            <input type="text" id="stops" name="stops" value="3"><br>
         </form>
+        <button id="stops-btn" onclick="routesWithinStops()">Find All Routes</button>
         <p id="output-stops"></p>
     </div>
     <div class="max-distance">
@@ -68,12 +70,14 @@
         <h3>Find all the routes between two cities within the given maximim distance allowed to travel.</h3>
         <form>
             <label for="city1">Start City:</label><br>
-            <input type="text" id="city1" name="city1" value="A"><br>
+            <input type="text" id="src2" name="src2" value="A"><br>
             <label for="city2">Destination:</label><br>
-            <input type="text" id="city2" name="city2" value="C"><br>
-            <input type="submit" value="Submit">
+            <input type="text" id="dst2" name="dst2" value="C"><br>
+            <label for="max-dist">Maximum Distance:</label><br>
+            <input type="text" id="max-dist" name="max-dist" value="3"><br>
         </form>
-        <p id="output-max-disatance"></p>
+        <button id="stops-btn" onclick="routesWithinDist()">Find All Routes</button>
+        <p id="output-max-distance"></p>
     </div>
     <script src="graph.js"></script>
 </body>

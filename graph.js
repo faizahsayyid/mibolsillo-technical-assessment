@@ -6,10 +6,10 @@ var currentGraph = null;
 
 function createGraph(){
     var graphInfo = document.getElementById("input-graph").value;
-    var isTest = document.getElementById("is-test").value;
+    var isTest = document.getElementById("is-test").checked;
+
     currentGraph = createRailwayGraph(graphInfo, isTest);
     var outputStr = "";
-    
     myGraphCities = currentGraph.cities.keys();
 
     for (var city of myGraphCities){
@@ -17,9 +17,88 @@ function createGraph(){
         outputStr += city + " -> " + neighbours + "<br>";
     }
     document.getElementById("output-graph").innerHTML = outputStr;
-    document.getElementById("create-btn").innerHTML = "Update Graph"
+    document.getElementById("create-btn").innerHTML = "Update Graph";
 }
 
+function calcDist(){
+    var outputStr = "";
+    var pathStr = document.getElementById("path").value;
+    var path = pathStr.split('-');
+    
+    if (currentGraph == null){
+        outputStr = "Error! Create a graph first!";
+    }
+    else{
+        var dist = currentGraph.getDistanceOfPath(path);
+        outputStr = "The distance of this path is: " + dist;
+    }
+    document.getElementById("output-distance").innerHTML = outputStr;
+}
+
+function shortestRoute(){
+    var city1 = document.getElementById("city1").value;
+    var city2 = document.getElementById("city2").value;
+    var outputStr = "";
+    if (currentGraph == null){
+        outputStr = "Error! Create a graph first!"
+    }
+    else{
+        var path = currentGraph.getShortestRoute(city1, city2);
+
+        if (path == "NO SUCH ROUTE"){
+            outputStr = path;
+        }
+        else{
+            var dist = currentGraph.getDistanceOfPath(path);
+            var pathStr = path.join('-');
+
+            outputStr = "The shortest route is: " + pathStr + "<br>" + "This route has a distance of: " + dist;
+        }
+    }
+    document.getElementById("output-shortest").innerHTML = outputStr;
+}
+
+function routesWithinStops(){
+    var src = document.getElementById("src1").value;
+    var dst = document.getElementById("dst1").value;
+    var maxStops = document.getElementById("stops").value;
+    var outputStr = "";
+
+    if (currentGraph == null){
+        outputStr = "Error! Create a graph first!";
+    }
+    else{
+        var paths = currentGraph.getRoutesWithinMaxStops(src, dst, maxStops);
+        if (paths == []){
+            outputStr = "NO SUCH ROUTE";
+        }
+        else{
+            var dist = currentGraph.getDistanceOfPath(path)
+
+            for(var path of paths){
+                var dist = currentGraph.getDistanceOfPath(path);
+                var pathStr = path.join('-')
+                outputStr = "The shortest route is: " + pathStr + "<br>" + "This route has a distance of: " + dist;
+                outputStr += "This route has a distance of: " + dist + "<br>";
+            }
+        }
+    }
+    document.getElementById("output-stops").innerHTML = outputStr;
+}
+
+function routesWithinDist(){
+    var src = document.getElementById("src2").value;
+    var dst = document.getElementById("dst2").value;
+    var maxDist = document.getElementById("max-dist").value;
+    var outputStr = "";
+    if (currentGraph == null){
+        outputStr = "Error! Create a graph first!"
+    }
+    else{
+
+    }
+    document.getElementById("output-max-distance").innerHTML = outputStr;
+}
 
 // ===================
 // Graph Class
@@ -78,8 +157,8 @@ class RailwayGraph{
     getDistance(city1, city2){
         if (this.cities.has(city1) && this.cities.has(city2)){
             // get the corresponding city vertices
-            v1 = this.cities.get(city1);
-            v2 = this.cities.get(city2);
+            var v1 = this.cities.get(city1);
+            var v2 = this.cities.get(city2);
 
             // retrieve the distance
             return v1.neighbours.get(v2);
@@ -90,9 +169,9 @@ class RailwayGraph{
     }
 
     getDistanceOfPath(path){
-        distSoFar = 0;
+        var distSoFar = 0;
         for (i = 0; i < path.length - 1; i++) {
-            newDist = this.getDistance(path[i], path[i + 1])
+            var newDist = this.getDistance(path[i], path[i + 1])
             if (newDist != null){
                 distSoFar += this.getDistance(path[i], path[i + 1]);
             }
@@ -108,7 +187,7 @@ class RailwayGraph{
     // returns the shortest path between city1 and city2
     // returns null if no route is found
     getShortestRoute(city1, city2){
-        dijkstraInfo = dijkstra(city1);
+        var dijkstraInfo = this.dijkstra(city1);
         var shortestDistances = dijkstraInfo[0];
         var prevVertex = dijkstraInfo[1];
         var curr = city2;
@@ -123,7 +202,8 @@ class RailwayGraph{
                 pathSoFar.push(curr);
                 curr = prevVertex.get(curr);
             }
-            return pathSoFar.reverse();;
+            pathSoFar.push(city1);
+            return pathSoFar.reverse();
         }
     }
 
@@ -135,26 +215,29 @@ class RailwayGraph{
         var prevVertex = new Map();
 
         // initialize shortestDistances
-        for (city in this.cities.values()){
-            if(city == startV){
-                shortestDistances.set(city, 0);
+        for (var city of this.cities.values()){
+            if(city.item == startV){
+                shortestDistances.set(city.item, 0);
             }
             else{
-                shortestDistances.set(city, Infinity);
+                shortestDistances.set(city.item, Infinity);
             }
         }
 
         while(visited.length < this.cities.size){
+            currVertex = this.minDistVertex(shortestDistances, visited);
+            var neighbours = this.getNeighbours(currVertex);
 
-            currVertex = minDistVertex(shortestDistances);
+            if (currVertex == null){
+                break;
+            }
 
-            for (neighbour in currVertex.neighbours.keys()){
+            for (var neighbour of neighbours){
                 if(!visited.includes(neighbour))
-                dist = shortestDistances.get(currVertex.item) + this.getDistance(currVertex.item, neighbour.item);
-
+                var dist = shortestDistances.get(currVertex) + this.getDistance(currVertex, neighbour);
                 if(dist < shortestDistances.get(neighbour)){
                     shortestDistances.set(neighbour, dist);
-                    prevVertex.set(neighbour, cur);
+                    prevVertex.set(neighbour, currVertex);
                 }
             }
 
@@ -162,6 +245,23 @@ class RailwayGraph{
         }
 
         return [shortestDistances, prevVertex];
+    }
+
+    // helper function for dijkstra
+    // return the cityVertex with a smallest distance in shortestDistances
+    minDistVertex(shortestDistances, visited){
+        var minDistSoFar = Infinity;
+        var minCitySoFar = null;
+
+        for (var city of shortestDistances.keys()){
+            if (shortestDistances.get(city) < minDistSoFar && !visited.includes(city)){
+                minDistSoFar = shortestDistances.get(city);
+                minCitySoFar = city;
+            }
+        }
+
+        // return this.cities.get(minCitySoFar);
+        return minCitySoFar;
     }
 
     // uses BFS
@@ -185,14 +285,17 @@ class RailwayGraph{
 
             if (last == dst){
                 //print path
+                console.log(path);
                 pathsFound.push(path);
             }
 
-            for (neighbour in this.getNeighbours(last)){
+            neighbours = this.getNeighbours(last);
+
+            for (var neighbour in neighbours){
                 if (!path.includes(neighbour)){
                     var newPath = [...path];
                     newPath.push(neighbour);
-                    queue.append(newPath);
+                    queue.push(newPath);
                 }
             }
             stopsFound += 1;
@@ -237,22 +340,6 @@ class RailwayGraph{
     }
 }
 
-// helper function for dijkstra
-// return the cityVertex with a smallest distance in shortestDistances
-function minDistVertex(shortestDistances){
-    var minDistSoFar = -1;
-    var minCitySoFar = null;
-
-    for (city in shortestDistances.keys()){
-        if (shortestDistances.get(city) < minDistSoFar){
-            minDistSoFar = shortestDistances.get(city);
-            minCitySoFar = city;
-        }
-    }
-
-    return this.cities.get(minCitySoFar);
-}
-
 // Creates graph from string input
 // if this is not test data:
 // input will have edges to add seperated by a semicolon and each 
@@ -267,7 +354,7 @@ function createRailwayGraph(graphStr, isTestData){
     if(isTestData)
     {
         let edgeStrs = graphStr.split(", ");
-        for(e in edgeStrs){
+        for(var e of edgeStrs){
 
             if (!graphSoFar.isInGraph(e[0])){
                 graphSoFar.addCity(e[0]);
