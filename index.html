@@ -6,9 +6,75 @@
 </head>
 <body>
 
-<h1>This is a Heading</h1>
-<p>This is a paragraph.</p>
-
-<script src="script.js"></script>
+    <div class="create-graph">
+        <h1>Create Graph</h1>
+        <h3>Enter data for the rail way graph in the form below</h3>
+        <p>
+            If you are entering data in the form of <b>test data</b> (aka in the format below), check off "Test Data" 
+            in the form below<br>
+            Ex. AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7 <br>
+            Otherwise, seperate each edge by a semicolon and each part of the edge by a comma.<br>
+            Ex. A,B,5; B,C,4; C,D,8; D,C,8; D,E,6; A,D,5; C,E,2; E,B,3; A,E,7
+        </p>
+        <form>
+            <input type="checkbox" id="is-test" name="is-test">
+            <label for="input-graph">Test Data</label><br>
+            <label for="input-graph">Input Graph:</label><br>
+            <textarea id="input-graph" name="input-graph" rows="5" cols="33">A,B,5; B,C,4; C,D,8; D,C,8; D,E,6; A,D,5; C,E,2; E,B,3; A,E,7</textarea><br>
+        </form>
+        <button id="create-btn" onclick="createGraph()">Create Graph</button>
+        <p id="output-graph"></p>
+    </div>
+    <div class="get-distance">
+        <h1>Find the distance of a given route</h1>
+        <h3>Enter the route whose distance you wish to find below</h3>
+        <p>
+            Seperate each city in the route by a dash<br>
+            Ex. A-B-C
+        </p>
+        <form>
+            <label for="get-distance">Input Route:</label><br>
+            <input type="text" id="get-distance" name="get-distance" value="A-B-C"><br>
+            <input type="submit" value="Submit">
+        </form>
+        <p id="output-distance"></p>
+    </div>
+    <div class="shortest-route">
+        <h1>Find the shortest route between two cities</h1>
+        <h3>Enter two cities from the graph below</h3>
+        <form>
+            <label for="city1">Start City:</label><br>
+            <input type="text" id="city1" name="city1" value="A"><br>
+            <label for="city2">Destination:</label><br>
+            <input type="text" id="city2" name="city2" value="C"><br>
+            <input type="submit" value="Submit">
+        </form>
+        <p id="output-shortest"></p>
+    </div>
+    <div class="stops">
+        <h1>Find all routes (max stops)</h1>
+        <h3>Find all the routes between two cities within the given maximim number of stops.</h3>
+        <form>
+            <label for="city1">Start City:</label><br>
+            <input type="text" id="city1" name="city1" value="A"><br>
+            <label for="city2">Destination:</label><br>
+            <input type="text" id="city2" name="city2" value="C"><br>
+            <input type="submit" value="Submit">
+        </form>
+        <p id="output-stops"></p>
+    </div>
+    <div class="max-distance">
+        <h1>Find all routes (max distance)</h1>
+        <h3>Find all the routes between two cities within the given maximim distance allowed to travel.</h3>
+        <form>
+            <label for="city1">Start City:</label><br>
+            <input type="text" id="city1" name="city1" value="A"><br>
+            <label for="city2">Destination:</label><br>
+            <input type="text" id="city2" name="city2" value="C"><br>
+            <input type="submit" value="Submit">
+        </form>
+        <p id="output-max-disatance"></p>
+    </div>
+    <script src="graph.js"></script>
 </body>
 </html>
